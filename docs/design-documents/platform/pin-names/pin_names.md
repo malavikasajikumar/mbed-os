@@ -2,22 +2,24 @@
 
 # Table of contents
 
-1. [Mbed OS design document](#mbed-os-design-document).
 1. [Table of contents](#table-of-contents).
-    1. [Revision history](#revision-history).
+    * [Revision history](#revision-history).
 1. [Introduction](#introduction).
     1. [Overview and background](#overview-and-background).
     1. [Requirements and assumptions](#requirements-and-assumptions).
-1. [System architecture and high-level design](#system-architecture-and-high-level-design).
-    1. [System architecture and component interaction](#system-architecture-and-component-interaction).
 1. [Detailed design](#detailed-design).
-1. [Usage scenarios and examples](#usage-scenarios-and-examples).
-1. [Tools and configuration changes](#tools-and-configuration-changes).
+    1. [Arduino Uno (Rev 3) Header Pins](#arduino-uno-rev-3-header-pins).
+        * [I2C Definition for Arduino Uno (Rev3) Pins](#i2c-definition-for-arduino-uno-rev3-pins)
+        * [SPI Definition for Arduino Uno (Rev3) Pins](#spi-definition-for-arduino-uno-rev3-pins)
+    1. [Custom/Vendor Header Pins](#custom-/-vendor-header-pins).
+        * [Custom/Vendor Connector I2C Definition](#custom-/-vendor-connector-i2c-definition).
+        * [Custom/Vendor Connector SPI Definition](#custom-/-vendor-connector-spi-definition).
+    1. [Board Components Pins](#board-components-pins).
+        * [LED Definition](#led-definition)
+        * [BUTTON Definition](#button-definition)
 1. [Other information](#other-information).
-    1. [Reusability](#reusability).
-    1. [Deprecations](#deprecations).
-    1. [References](#references).
-    1. [Custom headings](#custom-headings).
+    1. [Avoid Unnecessary Definitions](#avoid-unnecessary-definitions).
+
 
 ### Revision history
 
@@ -69,7 +71,7 @@ All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 &
     A4 = Px_xx,  // ADC 4 / GPIO 20  
     A5 = Px_xx,  // ADC 5 / GPIO 21
 
-**I2C Definition for Arduino Uno (Rev3) Pins **
+**I2C Definition for Arduino Uno (Rev3) Pins**
 
 All I2C definitions for the Arduino Uno (Rev3) header pins should be defined as follows:
 
@@ -83,7 +85,7 @@ All I2C definitions for the Arduino Uno (Rev3) header pins should be defined as 
     I2C_SDA = D14, // I2C SDA  
     I2C_SCL = D15, // I2C SCL
 
-**SPI definition for Arduino Uno (Rev3) Pins **  
+**SPI definition for Arduino Uno (Rev3) Pins**  
 
 All SPI definitions for the Arduino Uno (Rev3) header pins should be defined as follows:
 
