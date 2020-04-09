@@ -30,7 +30,7 @@
 
 ### Overview and background
 
-Mbed is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardwre capabilities or interfaces. However, the code, in most cases, is not truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. This document provides a standard for defining pin names for the commonly used Mbed interfaces in a board support package. 
+Mbed is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardware capabilities or interfaces. However, the code, in most cases, is not truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. This document provides a standard for defining pin names for the commonly used Mbed interfaces in a board support package. 
 
 ### Requirements and assumptions
 
@@ -160,15 +160,6 @@ All LED definitions should be defined as follows:
     LED2 = Px_xx,  // LED2  
     LED3 = Px_xx,  // LED3  
     LED4 = Px_xx,  // LED4  
-
-If further LEDs are needed the following should be used:
-
-    LED1 = Px_xx,  // LED1  
-    LED2 = Px_xx,  // LED2  
-    LED3 = Px_xx,  // LED3  
-    LED4 = Px_xx,  // LED4  
-    LED5 = Px_xx,  // LED5  
-    LED6 = Px_xx,  // LED6  
     .  
     .  
     LEDN = Px_xx   // LEDN
@@ -181,16 +172,7 @@ All BUTTON definitions should be defined as follows:
     BUTTON1 = Px_xx,  // BUTTON1  
     BUTTON2 = Px_xx,  // BUTTON2  
     BUTTON3 = Px_xx,  // BUTTON3  
-    BUTTON4 = Px_xx,  // BUTTON4  
-
-If further BUTTONs are needed the following should be used:
-
-    BUTTON1 = Px_xx,  // BUTTON1  
-    BUTTON2 = Px_xx,  // BUTTON2  
-    BUTTON3 = Px_xx,  // BUTTON3  
-    BUTTON4 = Px_xx,  // BUTTON4  
-    BUTTON5 = Px_xx,  // BUTTON5  
-    BUTTON6 = Px_xx,  // BUTTON6  
+    BUTTON4 = Px_xx,  // BUTTON4   
     .  
     .  
     BUTTONN = Px_xx   // BUTTONN  
