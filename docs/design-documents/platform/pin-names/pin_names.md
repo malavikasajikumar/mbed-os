@@ -24,17 +24,19 @@
 ### Revision history
 
 1.0 - Initial revision - Malavika Sajikumar - 3/5/2020.  
-**NOTE: You may also specify the Mbed OS version this revision of design document applies to.**
+This document was written for MBED OS version 5.15 (released on 11th of February 2020).
 
 # Introduction
 
 ### Overview and background
 
-Mbed is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardware capabilities or interfaces. However, the code, in most cases, is not truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. This document provides a standard for defining pin names for the commonly used Mbed interfaces in a board support package. 
+Mbed is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardware capabilities or interfaces. However, the code, in most cases, is not truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. 
+
+This document provides a standard for defining pin names for the commonly used Mbed interfaces like I2C, SPI, etc. and board components like buttons and LEDs in a board support package.
 
 ### Requirements and assumptions
 
-It is assumed that the PinNames.h file of the board support package defines pins for commonly used interfaces like I2C, SPI, UART etc. and board components like buttons and LEDs.
+This document mainly references to the pin standards required for Arduino Uno(Rev3) header which is shared among multiple Mbed enabled boards. The Arduino Uno header has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno header are based on the Arduino Uno Rev 3 header implementation.
 
 # Detailed design
 
