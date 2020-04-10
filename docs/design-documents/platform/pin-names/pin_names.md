@@ -36,17 +36,17 @@ This document provides a standard for defining pin names for the commonly used M
 
 ### Requirements and assumptions
 
-This document mainly references to the pin standards required for Arduino Uno(Rev3) header which is shared among multiple Mbed enabled boards. The Arduino Uno header has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno header are based on the Arduino Uno Rev 3 header implementation.
+This document mainly applies to the pin standards required for Arduino Uno header which is shared among multiple Mbed enabled boards. The Arduino Uno header has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno header are based on the Arduino Uno Rev3 header implementation.
 
 # Detailed design
 
 To achieve meaningful portability of application code across various Mbed enabled boards, the pin names of commonly used interfaces and board components should be common across these boards. This document describes a set of rules on how to name these pins in the board support package, specifically in PinNames.h file of the board.
 
-### Arduino Uno (Rev 3) Header Pins
+### Arduino Uno (Rev3) Header Pins
 
 All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 & A0-A5 pins as a default standard.
 
-    // Arduino Uno(Rev3) Header pin connection naming  
+    // Arduino Uno (Rev3) header pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) header pin
     
     D0 = Px_xx,  // UART RX / GPIO 0  
@@ -61,7 +61,7 @@ All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 &
     D9 = Px_xx,  // TMR / PWM / GPIO 9  
     D10 = Px_xx, // SPI CS / TMR / PWM / GPIO 10  
     D11 = Px_xx, // SPI MOSI / TMR / PWM / GPIO 11  
-    D12 = Px_xx, // SPI MISO / TMR / PWM / GPIO 12  
+    D12 = Px_xx, // SPI MISO / GPIO 12  
     D13 = Px_xx, // SPI SCK / GPIO 13  
     D14 = Px_xx, // I2C SDA / GPIO 14  
     D15 = Px_xx, // I2C SCL / GPIO 15  
@@ -77,7 +77,7 @@ All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 &
 
 All I2C definitions for the Arduino Uno (Rev3) header pins should be defined as follows:
 
-    // Arduino Uno(Rev3) Header pin connection naming   
+    // Arduino Uno (Rev3) header pin connection naming   
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) header pin
     
     D14 = Px_xx, // I2C SDA / GPIO 14  
@@ -91,12 +91,12 @@ All I2C definitions for the Arduino Uno (Rev3) header pins should be defined as 
 
 All SPI definitions for the Arduino Uno (Rev3) header pins should be defined as follows:
 
-    // Arduino Uno(Rev3) header pin connection naming  
+    // Arduino Uno (Rev3) header pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) header pin
     
     D10 = Px_xx,    // SPI CS / TMR / PWM / GPIO 10  
     D11 = Px_xx,    // SPI MOSI / TMR / PWM / GPIO 11  
-    D12 = Px_xx,    // SPI MISO / TMR / PWM / GPIO 12  
+    D12 = Px_xx,    // SPI MISO / GPIO 12  
     D13 = Px_xx,    // SPI SCK / GPIO 13  
 
     // SPI signals are aliased as below  
@@ -192,7 +192,7 @@ If only 1 LED/BUTTON is on board, do not define additional LEDs/BUTTONs in BSP. 
     LED3 = LED1,   // LED3  
     LED4 = LED1,   // LED4   
     
-    BUTTON1 = Px_xx,  	 // BUTTON1  
+    BUTTON1 = Px_xx,     // BUTTON1  
     BUTTON2 = BUTTON1,   // BUTTON2  
     BUTTON3 = BUTTON1,   // BUTTON3  
     BUTTON4 = BUTTON1,   // BUTTON4  
