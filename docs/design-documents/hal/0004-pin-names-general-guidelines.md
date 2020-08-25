@@ -24,10 +24,7 @@ This document is written for Mbed OS 6.
 
 Mbed OS is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardware capabilities or interfaces. However, the code may not be truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. 
 
-This document provides general guidelines and best practices for defining pin names that could apply to all boards but it's not specific to any type of connector.
-
-Note there might be separate documents for pin names that apply to specific connectors such as the Arduino Uno. Look for them in the HAL design documents folder.
-
+This document provides specific guidelines and best practices for defining pin names that apply to boards that implement and are compliant wit Arduino Uno compliant connector.
 
 
 ## Detailed design

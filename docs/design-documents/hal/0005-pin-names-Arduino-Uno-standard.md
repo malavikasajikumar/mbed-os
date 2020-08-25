@@ -1,4 +1,4 @@
-# Pin Names design document
+# Arduino Uno Pin Names design document
 
 # Table of contents
 
@@ -19,8 +19,8 @@
 
 ### Revision history
 
-1.0 - Initial revision - Malavika Sajikumar - 7/20/2020.  
-This document was written for Mbed OS version 5.15 (released on 11th of February 2020).
+1.0 - Initial revision - Malavika Sajikumar, Marcelo Salazar - August 2020  
+This document is written for Mbed OS 6.
 
 # Introduction
 
@@ -28,11 +28,11 @@ This document was written for Mbed OS version 5.15 (released on 11th of February
 
 Mbed is designed so that application code written in the platform is portable across different Mbed supported boards with the same hardware capabilities or interfaces. However, the code, in most cases, is not truly portable due to the differences in pin name definitions for the same kind of interfaces across different boards. 
 
-This design document provides rules and guidelines on how to define Arduino Uno connector pins in the board support package of development boards to achieve true code portability across various boards with Arduino Uno connectors and code targeting pins on the same. 
+This design document provides rules and guidelines on how to define Arduino Uno connector pins in the board support package of development boards to achieve true code portability across various boards with Arduino Uno connectors.
 
 ### Requirements and assumptions
 
-This document applies to the pin standards required for Arduino Uno connector which is used on multiple Mbed enabled boards. The Arduino Uno connector has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno connector are based on the Arduino Uno Rev3 connector implementation.
+This document applies to the pin standards required for Arduino Uno connector which is used on multiple Mbed Enabled boards. The Arduino Uno connector has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno connector are based on the Arduino Uno Rev3 connector implementation.
 
 If the development board is defined as Arduino Uno compliant, the Arduino Uno connector standard has to be followed as described in this document and `ARDUINO_UNO` name should be defined as a supported form factor in targets.json file:
 
@@ -40,12 +40,9 @@ If the development board is defined as Arduino Uno compliant, the Arduino Uno co
             "ARDUINO_UNO"
         ],
 
-The Arduino Uno connector pins and pin aliases are defined in two files - PinNames.h and PinNamesTypes.h. These files reside in the following locations:
+The Arduino Uno connector pins are defined in PinNames.h. The files resides in the following locations:
 
-    targets/MCU_VENDOR/MCU_FAMILY/MCU/Board/PinNames.h
-    targets/MCU_VENDOR/PinNamesTypes.h
-
->> [MS] I'm not sure what's the purpose of PinNamesTypes.h in relation with ArduinoUno
+    targets/MCU_VENDOR/MCU_FAMILY/MCU_NAME/Board/PinNames.h
 
 # Detailed design
 
@@ -53,7 +50,13 @@ To achieve meaningful portability of application code across various Mbed Enable
 
 ### Arduino Uno (Rev3) connector Pins
 
-All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 & A0-A5 pins as a default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
+The following diagrams shows the Arduino Uno Rev3 standard for Mbed boards:
+
+![Static pinmap model](img/Arduino_Uno_Mbed.png)
+
+**Digital and Analog pin definition**
+
+The Arduino Uno (Rev3) form factor for Mbed boards should define D0-D15 & A0-A5 pins as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
 
     // Arduino Uno (Rev3) connector pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) connector pin
@@ -82,37 +85,60 @@ All Arduino Uno (Rev3) form factor Mbed controller boards should define D0-D15 &
     ARDUINO_UNO_A4 = Px_xx,
     ARDUINO_UNO_A5 = Px_xx,
 
->>TODO: Should the Arduino Uno standard description be provided here?
->> [MS] It would be nice to add an image (or link to page) with standard definition of Arduino Uno pinnames.
 
-If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or no connect pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
+If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or no connected pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
 
 The pins with alternate functions have to be referenced using MCU pin names (Px_xx) or pin name aliases in application code. 
 
->>TODO: Should adding D pin names still be an option? A comment describing alternative functionality for each pin should be provided in that case.
->> [MS] I'd propose we move the generic "Dx" type of definitions to the generic document.
+**I2C, SPI and UART definition**
 
->>TODO: How should the implementation of vendor defined drivers be modified so that NC pins can be caught as an error? For example: Have to redefine the vendor drivers (i2c_api.c, spi_api.c) to catch NC using MBED_ASSERT. Have to define gpio_is_connected() in gpio_api.c for all targets?
-
->> [MS] AP: Marcelo to review and discuss
-
-**I2C and SPI Definition for Arduino Uno (Rev3) Pins**
-
-All I2C and SPI pin name alias definitions for the Arduino Uno (Rev3) connector pins should be defined within PinNamesTypes.h as follows:
+All I2C, SPI and UART pin name alias definitions for the Arduino Uno (Rev3) connector pins should be defined in ArduinoUnoAliases.h in the Mbed OS HAL (common to all Arduino Uno compliant targets) as follows:
 
     #ifdef TARGET_FF_ARDUINO_UNO
     // Arduino Uno I2C signals aliases
-    #define ARDUINO_UNO_I2C_SDA D14
-    #define ARDUINO_UNO_I2C_SCL D15
+    #define ARDUINO_UNO_I2C_SDA ARDUINO_UNO_D14
+    #define ARDUINO_UNO_I2C_SCL ARDUINO_UNO_D15
 
     // Arduino Uno SPI signals aliases
-    #define ARDUINO_UNO_SPI_CS   D10
-    #define ARDUINO_UNO_SPI_MOSI D11
-    #define ARDUINO_UNO_SPI_MISO D12
-    #define ARDUINO_UNO_SPI_SCK  D13
+    #define ARDUINO_UNO_SPI_CS   ARDUINO_UNO_D10
+    #define ARDUINO_UNO_SPI_MOSI ARDUINO_UNO_D11
+    #define ARDUINO_UNO_SPI_MISO ARDUINO_UNO_D12
+    #define ARDUINO_UNO_SPI_SCK  ARDUINO_UNO_D13
+
+    // Arduino Uno UART signals aliases
+    #define ARDUINO_UNO_UART_TX  ARDUINO_UNO_D0
+    #define ARDUINO_UNO_UART_RX  ARDUINO_UNO_D1
+
     #endif // TARGET_FF_ARDUINO_UNO
 
->> [MS] Discuss whether we could have these definitions in a specific file that applies to all boards: ArduinoUnoAliases.h
+**Using Arduino Uno pins from an application**
 
->>TODO: Should I2C and SPI pin name aliases for Arduino Uno connector be defined without the ARDUINO_UNO_ prefix? If so, how can this standardisation be distinguished from legacy non-Arduino-compliant board definitions?
->> [MS] I think it would be benefitial to include the ARDUINO_UNO_ prefix to distinguis from non-standard boards.
+> Pending to add details
+
+### Non-valid definitions
+
+The following is an example of definitions of pin names and comments on whether they are correctly defined or not.
+   
+    ARDUINO_UNO_D0 = PB_0,            // D0 signal is valid
+    ARDUINO_UNO_D1 = PB_0,            // Not valid as it's duplicate  
+    ARDUINO_UNO_D2 = ARDUINO_UNO_D0,  // Not valid as it's duplicate  
+    ARDUINO_UNO_D3 = NA               // Not valid as doesn't exist
+
+### Testing compliance
+
+There should be both compile and run time checks to confirm whether a board has valid Arduino Uno pin names. The following checks should be implemented:
+
+- ARDUINO_UNO_Dx/Ax pin definition and possible duplicates
+- I2C compatibility on ARDUINO_UNO_D14/D15
+- SPI compatibility on ARDUINO_UNO_D10/D11/D12/D13
+- UART compatibility on ARDUINO_UNO_D0/D1
+- PWM compatibility on ARDUINO_UNO_D3/D4/D5/D6/D8/D9/D10
+- Analog compatibility on ARDUINO_UNO_A0/A1/A2/A3/A4/A5
+
+This can be achieved by using Greentea, for example:
+
+    mbed test -t <toolchain> -m <target> -n *test_arduino_uno_pin_names* --compile
+    mbed test -t <toolchain> -m <target> -n *test_arduino_uno_pin_names* --run
+
+If the target claims to support the `ARDUINO_UNO` formfactor in targets.json but no valid Arduino Uno pinnames are detected, then an error should be generated.
+
