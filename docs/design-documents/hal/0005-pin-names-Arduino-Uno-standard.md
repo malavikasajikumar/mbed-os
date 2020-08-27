@@ -56,7 +56,7 @@ The following diagrams shows the Arduino Uno Rev3 standard for Mbed boards:
 
 **Digital and Analog pin definition**
 
-The Arduino Uno (Rev3) form factor for Mbed boards should define D0-D15 & A0-A5 pins as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
+The Arduino Uno (Rev3) form factor for Mbed boards must support and define both D0-D15 pins for digital GPIO and A0-A5 pins for analog inout as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
 
     // Arduino Uno (Rev3) connector pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) connector pin
@@ -85,7 +85,6 @@ The Arduino Uno (Rev3) form factor for Mbed boards should define D0-D15 & A0-A5 
     ARDUINO_UNO_A4 = Px_xx,
     ARDUINO_UNO_A5 = Px_xx,
 
-
 If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or no connected pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
 
 The pins with alternate functions have to be referenced using MCU pin names (Px_xx) or pin name aliases in application code. 
@@ -111,6 +110,17 @@ All I2C, SPI and UART pin name alias definitions for the Arduino Uno (Rev3) conn
 
     #endif // TARGET_FF_ARDUINO_UNO
 
+**Other pin functions**
+
+Some Dx pinnames may support the usage of PWM or Timers functions. Although this is recomended, it's not a mandatory as requirement to be compliant with the Arduino Uno standard for Mbed boards.
+
+Note this might be one of the main differencess accross Mbed boards and therefore the application should not assume the same behaviour for PWM and Timers for them.
+
+The RESET signal should be defined in the Arduino Uno connector to let the user or an external component to put the MCU in reset state.
+
+The VIN signal isn't strictly defined in the Arduino standard in some cases may work as a bi-directional power supply. Tipically it could accept between 5 to 12 volts, but it's not a requirement.
+
+
 **Using Arduino Uno pins from an application**
 
 > Pending to add details
@@ -132,7 +142,7 @@ There should be both compile and run time checks to confirm whether a board has 
 - I2C compatibility on ARDUINO_UNO_D14/D15
 - SPI compatibility on ARDUINO_UNO_D10/D11/D12/D13
 - UART compatibility on ARDUINO_UNO_D0/D1
-- PWM compatibility on ARDUINO_UNO_D3/D4/D5/D6/D8/D9/D10
+- PWM compatibility on ARDUINO_UNO_D3/D5/D6/D9/D10/D11
 - Analog compatibility on ARDUINO_UNO_A0/A1/A2/A3/A4/A5
 
 This can be achieved by using Greentea, for example:
