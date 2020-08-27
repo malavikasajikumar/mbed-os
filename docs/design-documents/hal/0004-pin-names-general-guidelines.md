@@ -26,7 +26,7 @@ Mbed OS is designed so that application code written in the platform is portable
 
 This document provides general guidelines and best practices for defining pin names that could apply to all boards but it's not specific to any type of connector.
 
-Note there might be separate documents for pin names that apply to specific connectors such as the Arduino Uno. These would be avaialble in the [HAL design documents](../) folder.
+Note there might be separate documents for pin names that apply to specific connectors such as the Arduino Uno. These would be avaialble in the [HAL design documents](./) folder.
 
 
 
@@ -42,13 +42,13 @@ Only add LEDs that are available in the board. This is an example on how to defi
 
     // Px_xx relates to the processor pin connected to the LED
     
-    LED1 = Px_xx  // LED1
-    LED2 = Px_xx  // LED2  
-    LED3 = Px_xx  // LED3  
-    LED4 = Px_xx  // LED4  
+    #define LED1 = Px_xx  // LED1
+    #define LED2 = Px_xx  // LED2  
+    #define LED3 = Px_xx  // LED3  
+    #define LED4 = Px_xx  // LED4  
     .  
     .  
-    LEDN = Px_xx   // LEDN
+    #define LEDN = Px_xx   // LEDN
 
 **Using LEDs at application**
 
@@ -80,13 +80,13 @@ However, these names do not apply to all boards and hence should not be used in 
 Only add buttons that are available in the board. This is an example on how to define buttons in PinNames.h:
 
     // Px_xx relates to the processor pin connected to the Button  
-    BUTTON1 = Px_xx  // BUTTON1  
-    BUTTON2 = Px_xx  // BUTTON2  
-    BUTTON3 = Px_xx  // BUTTON3  
-    BUTTON4 = Px_xx  // BUTTON4   
+    #define BUTTON1 = Px_xx  // BUTTON1  
+    #define BUTTON2 = Px_xx  // BUTTON2  
+    #define BUTTON3 = Px_xx  // BUTTON3  
+    #define BUTTON4 = Px_xx  // BUTTON4   
     .  
     .  
-    BUTTONN = Px_xx   // BUTTONN  
+    #define BUTTONN = Px_xx   // BUTTONN  
 
 **Using Buttons at application**
 
@@ -111,7 +111,9 @@ However, these names do not apply to all boards and hence should not be used in 
 
 ### UART
 
-Every Mbed board includes a serial interface to the host PC. This is a requirement and it's useful to be able to run automated tests using Greentea as well as displaying the status of the application.
+Every Mbed board includes a serial interface to the host PC, which allows the console to print useful information about the application status as well to perform basis debug tasks.
+
+This is also a requirement to run automated tests using Greentea, as the communication between the host PC and the MCU is done over serial.
 
 This is an example on how to define UART names in PinNames.h:
 
