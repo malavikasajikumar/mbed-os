@@ -2,25 +2,24 @@
 
 # Table of contents
 
-1. [Table of contents](#table-of-contents).
-    * [Revision history](#revision-history).
-1. [Introduction](#introduction).
-    1. [Overview and background](#overview-and-background).
-    1. [Requirements and assumptions](#requirements-and-assumptions).
-1. [Detailed design](#detailed-design).
-    1. [Arduino Uno (Rev 3) connector Pins](#arduino-uno-rev-3-connector-pins).
-        1. [I2C and SPI Definition for Arduino Uno (Rev3) Pins](#i2c-definition-for-arduino-uno-rev3-pins)
-    1. [Board Components Pins](#board-components-pins).
-        1. [LED Definition](#led-definition)
-        1. [BUTTON Definition](#button-definition)
-1. [Other information](#other-information).
-    1. [Avoid Unnecessary Definitions](#avoid-unnecessary-definitions).
+1. [Table of contents](#table-of-contents)
+    * [Revision history](#revision-history)
+1. [Introduction](#introduction)
+    1. [Overview and background](#overview-and-background)
+    1. [Requirements and assumptions](#requirements-and-assumptions)
+1. [Detailed design](#detailed-design)
+    1. [Arduino Uno (Rev3) connector pins](#arduino-uno-(rev3)-connector-pins)
+    1. [Usage of Arduino Uno pin-names in an application](#usage-of-arduino-uno-pin-names-in-an-application)
+1. [Non-valid definitions](#non-valid-definitions)
+1. [Testing compliance](#testing-compliance)
+1. [Implementation details](#implementation-details)
 
 
 ### Revision history
 
-1.0 - Initial revision - Malavika Sajikumar, Marcelo Salazar - August 2020  
+Initial revision: 1.0
 This document is written for Mbed OS 6.
+Authors: Malavika Sajikumar (ADI), Sean Doyle (ADI), Kyle Jansen (ADI), Jerome Coutant (ST), Marcelo Salazar (Arm).
 
 # Introduction
 
@@ -48,7 +47,7 @@ The Arduino Uno connector pins are defined in PinNames.h. The files resides in t
 
 To achieve meaningful portability of application code across various Mbed Enabled boards that are Arduino Uno compliant, the pin names used for the connector pins should be common across these boards. This document describes a set of rules on how and where to define these pins in the board support package.
 
-### Arduino Uno (Rev3) connector Pins
+### Arduino Uno (Rev3) connector pins
 
 The following diagrams shows the Arduino Uno Rev3 standard for Mbed boards:
 
@@ -116,15 +115,53 @@ Some Dx pinnames may support the usage of PWM or Timers functions. Although this
 
 Note this might be one of the main differencess accross Mbed boards and therefore the application should not assume the same behaviour for PWM and Timers for them.
 
-The RESET signal should be defined in the Arduino Uno connector to let the user or an external component to put the MCU in reset state.
+The RESET signal should be defined in the Arduino Uno connector to let the user or an external component put the MCU in reset state.
 
-The VIN signal isn't strictly defined in the Arduino standard in some cases may work as a bi-directional power supply. Tipically it could accept between 5 to 12 volts, but it's not a requirement.
+The VIN signal isn't strictly defined in the Arduino standard and in some cases may work as a bi-directional power supply. Tipically it could accept between 5 to 12 volts, but it's not a requirement.
 
+### Usage of Arduino Uno pin-names in an application
 
-**Using Arduino Uno pins from an application**
+**Configuration**
 
-> Pending to add details
+The pin names defined to each of the MCUs in PinNames.h are considered the default configuration for every target in Mbed OS.
+They are picked automatically at compile time and can used in the application.
 
+However, it's possible to override the default configuration. This is the list of configuration files and a description of each of them:
+
+- `PinNames.h`: includes the default configuration for Arduino Uno pins and how they are connected to the MCU as described in this document.
+- `mbed_lib.json`: configuration for specific components to use the default Arduino Uno pin-names or select other MCU pins if required. This file can be defined in Mbed OS or in an external library for the component, for [example](https://github.com/ARMmbed/mbed-os/blob/master/storage/blockdevice/COMPONENT_SD/mbed_lib.json).
+- `mbed_app.json`: application configuration that inherits the `mbed_lib.json` if exists and can override the pin configuration for the component if required. This file is usually placed at the root directory of the application.
+- main application: the `.cpp` application could initialize the drivers with the default Arduino Uno pin-name configution, use the configuration in `mbed_app.json`, or use custom pins if required.
+
+**Examples of usage of Arduino Uno pin names**
+
+This section provides a few examples with guidelines on using Arduino Uno pin names. It's not a guide to use Mbed Drivers API (please refer to the [documentation](https://os.mbed.com/docs/mbed-os/latest/apis/drivers.html) for details).
+
+It's possible to use digital signals in both Dx and Ax pins:
+
+    DigitalOut myGPIO1(ARDUINO_UNO_D3); // Output signal
+    DigitalOut myGPIO2(ARDUINO_UNO_D4); // Input signal
+    DigitalOut myGPIO3(ARDUINO_UNO_A0); // A0 can be used as digital signal as well
+
+Usage of ADC is only possible on Ax pins:
+
+    AnalogIn myADC1(ARDUINO_UNO_A1);    // Analog input
+
+UART can be defined with pin names or aliases (the latter is preferred):
+
+    BufferedSerial serial_port(ARDUINO_UNO_D1, ARDUINO_UNO_D0);
+    BufferedSerial serial_port(ARDUINO_UNO_UART_RX, ARDUINO_UNO_UART_TX);
+
+SPI can be defined with pin names or aliases (the latter is preferred):
+
+    SPI spi(ARDUINO_UNO_D11, ARDUINO_UNO_D12, ARDUINO_UNO_D13); // mosi, miso, sclk
+    SPI spi(ARDUINO_UNO_SPI_MOSI, ARDUINO_UNO_SPI_MISO, ARDUINO_UNO_SPI_SCK);
+
+I2C can be defined with pin names or aliases (the latter is preferred):
+
+    I2C i2c(ARDUINO_UNO_D14, ARDUINO_UNO_D15);
+    I2C i2c(ARDUINO_UNO_I2C_SDA, ARDUINO_UNO_I2C_SCL);
+ 
 ### Non-valid definitions
 
 The following is an example of definitions of pin names and comments on whether they are correctly defined or not.
@@ -145,10 +182,29 @@ There should be both compile and run time checks to confirm whether a board has 
 - PWM compatibility on ARDUINO_UNO_D3/D5/D6/D9/D10/D11
 - Analog compatibility on ARDUINO_UNO_A0/A1/A2/A3/A4/A5
 
-This can be achieved by using Greentea, for example:
+There is a proposal [here](https://github.com/ARMmbed/mbed-os/compare/master...jeromecoutant:DEV_STANDARDIZATION) on how to perform tests on pins.
+
+Additionally, there should be tests on each of the Arduino Uno pins to confirm whether the required funcionality is implemented correctly. This can be achieved by using the FPGA test shield and reusing the existing [tests](https://github.com/ARMmbed/mbed-os/tree/master/TESTS/mbed_hal_fpga_ci_test_shield) (note it's about to be moved)
+
+The tests could be compiled and run unsing Greentea as shown here:
 
     mbed test -t <toolchain> -m <target> -n *test_arduino_uno_pin_names* --compile
     mbed test -t <toolchain> -m <target> -n *test_arduino_uno_pin_names* --run
 
 If the target claims to support the `ARDUINO_UNO` formfactor in targets.json but no valid Arduino Uno pinnames are detected, then an error should be generated.
 
+### Implementation details
+
+There are a number of changes and enhancements required to introduce support for the Arduino Uno standard in Mbed OS.
+
+Mbed OS currently includes the `ARDUINO` form factor although it's not considered a standard as it's poorly defined and there are no checks on specific pin names. The configuration for this form factor should continue to be available, although should be marked as deprecated aimed to be removed in the next version of Mbed OS.
+
+The following files should be created or updated with a Arduino Uno specific implementation:
+
+- https://github.com/ARMmbed/mbed-os/blob/master/hal/ArduinoUnoAliases.h (new)
+ - https://github.com/ARMmbed/mbed-os/blob/master/hal/mbed_pinmap_default.cpp 
+ - https://github.com/ARMmbed/mbed-os/blob/master/hal/mbed_gpio.c
+- https://github.com/ARMmbed/mbed-os/blob/master/targets/targets.json
+- https://github.com/ARMmbed/mbed-os/blob/master/hal/pinmap.h
+- https://github.com/ARMmbed/mbed-os/tree/master/TESTS/arduino_uno_pin_names (new)
+- https://github.com/ARMmbed/mbed-os/tree/master/TESTS/mbed_hal_fpga_ci_test_shield
