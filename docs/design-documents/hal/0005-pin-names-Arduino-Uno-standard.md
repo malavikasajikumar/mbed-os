@@ -18,8 +18,10 @@
 ### Revision history
 
 Initial revision: 1.0
-This document is written for Mbed OS 6.
+
 Authors: Malavika Sajikumar (ADI), Sean Doyle (ADI), Kyle Jansen (ADI), Jerome Coutant (ST), Marcelo Salazar (Arm).
+
+This document is written for Mbed OS 6.
 
 # Introduction
 
@@ -39,7 +41,7 @@ If the development board is defined as Arduino Uno compliant, the Arduino Uno co
             "ARDUINO_UNO"
         ],
 
-The Arduino Uno connector pins are defined in PinNames.h. The files resides in the following locations:
+The Arduino Uno connector pins are defined in PinNames.h in the following location:
 
     targets/MCU_VENDOR/MCU_FAMILY/MCU_NAME/Board/PinNames.h
 
@@ -57,7 +59,7 @@ The following diagrams shows the Arduino Uno Rev3 standard for Mbed boards:
 
 The Arduino Uno (Rev3) form factor for Mbed boards must support and define both D0-D15 pins for digital GPIO and A0-A5 pins for analog input as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
 
-The analog input signals in Arduino Uno connector must supported on at least the Ax pins.
+The analog input signals in the Arduino Uno connector must be supported on at least the Ax pins.
 
     // Arduino Uno (Rev3) connector pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) connector pin
@@ -87,8 +89,6 @@ The analog input signals in Arduino Uno connector must supported on at least the
     ARDUINO_UNO_A5 = Px_xx,
 
 If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or no connected pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
-
-The pins with alternate functions have to be referenced using MCU pin names (Px_xx) or pin name aliases in application code. 
 
 **I2C, SPI and UART definition**
 
@@ -139,24 +139,21 @@ However, it's possible to override the default configuration. This is the list o
 
 This section provides a few examples with guidelines on using Arduino Uno pin names on official example applications. It's not a guide to use Mbed Drivers API (please refer to the [documentation](https://os.mbed.com/docs/mbed-os/latest/apis/drivers.html) for details).
 
+
 It's possible to use digital signals in both Dx and Ax pins:
 
     DigitalOut myGPIO1(ARDUINO_UNO_D3); // Output signal
-    DigitalOut myGPIO2(ARDUINO_UNO_D4); // Input signal
+    DigitalIn  myGPIO2(ARDUINO_UNO_D4); // Input signal
     DigitalOut myGPIO3(ARDUINO_UNO_A0); // A0 can be used as digital signal as well
 
 Usage of ADC on the Arduino Uno connector should be done only the Ax pins:
 
     AnalogIn myADC1(ARDUINO_UNO_A1);    // Analog input
 
-The MCU may support the usage of ADC functions in other non-Ax pins. This is something that developers could use in their own custom applications. It's recommended they use the MCU's pin names as shown here:
-
-    AnalogIn myADC2(P5_23);             // Custom usage of ADC
-
 UART can be defined with pin names or aliases (the latter is preferred):
 
     BufferedSerial serial_port(ARDUINO_UNO_D1, ARDUINO_UNO_D0);
-    BufferedSerial serial_port(ARDUINO_UNO_UART_RX, ARDUINO_UNO_UART_TX);
+    BufferedSerial serial_port(ARDUINO_UNO_UART_TX, ARDUINO_UNO_UART_RX);
 
 SPI can be defined with pin names or aliases (the latter is preferred):
 
@@ -168,6 +165,14 @@ I2C can be defined with pin names or aliases (the latter is preferred):
     I2C i2c(ARDUINO_UNO_D14, ARDUINO_UNO_D15);
     I2C i2c(ARDUINO_UNO_I2C_SDA, ARDUINO_UNO_I2C_SCL);
  
+The MCU may support the usage of alternate functions not defined in the Arduino Uno standard. These pins shouldn't be used in official example applications developed by Arm nor Partners.
+ 
+Developers could use MCU pin names (Px_xx) or pin name aliases in application code as they wish, althought for clarity we recommended to use the MCU's pin names as shown here:
+
+    AnalogIn myADC2(P5_23);   // Custom usage of ADC
+
+
+
 ### Non-valid definitions
 
 The following is an example of definitions of pin names and comments on whether they are correctly defined or not.
@@ -175,22 +180,22 @@ The following is an example of definitions of pin names and comments on whether 
     ARDUINO_UNO_D0 = PB_0,            // D0 signal is valid
     ARDUINO_UNO_D1 = PB_0,            // Not valid as it's duplicate  
     ARDUINO_UNO_D2 = ARDUINO_UNO_D0,  // Not valid as it's duplicate  
-    ARDUINO_UNO_D3 = NA               // Not valid as doesn't exist
+    ARDUINO_UNO_D3 = NC               // Not valid as doesn't exist
 
 ### Testing compliance
 
 There should be both compile and run time checks to confirm whether a board has valid Arduino Uno pin names. The following checks should be implemented:
 
-- ARDUINO_UNO_Dx/Ax pin definition and possible duplicates
-- I2C compatibility on ARDUINO_UNO_D14/D15
-- SPI compatibility on ARDUINO_UNO_D10/D11/D12/D13
-- UART compatibility on ARDUINO_UNO_D0/D1
-- PWM compatibility on ARDUINO_UNO_D3/D5/D6/D9/D10/D11
-- Analog compatibility on ARDUINO_UNO_A0/A1/A2/A3/A4/A5
+- `ARDUINO_UNO_Dx/Ax` pin definition and possible duplicates
+- I2C compatibility on `ARDUINO_UNO_D14/D15`
+- SPI compatibility on `ARDUINO_UNO_D10/D11/D12/D13`
+- UART compatibility on `ARDUINO_UNO_D0/D1`
+- PWM compatibility on `ARDUINO_UNO_D3/D5/D6/D9/D10/D11`
+- Analog compatibility on `ARDUINO_UNO_A0/A1/A2/A3/A4/A5`
 
 There is a proposal [here](https://github.com/ARMmbed/mbed-os/compare/master...jeromecoutant:DEV_STANDARDIZATION) on how to perform tests on pins.
 
-Additionally, there should be tests on each of the Arduino Uno pins to confirm whether the required funcionality is implemented correctly. This can be achieved by using the FPGA test shield and reusing the existing [tests](https://github.com/ARMmbed/mbed-os/tree/master/TESTS/mbed_hal_fpga_ci_test_shield) (note it's about to be moved)
+Additionally, there should be tests on each of the Arduino Uno pins to confirm whether the required funcionality is implemented correctly. This can be achieved by using the FPGA test shield and the existing [tests](https://github.com/ARMmbed/mbed-os/tree/master/hal/tests/TESTS/mbed_hal_fpga_ci_test_shield).
 
 The tests could be compiled and run unsing Greentea as shown here:
 
@@ -199,11 +204,14 @@ The tests could be compiled and run unsing Greentea as shown here:
 
 If the target claims to support the `ARDUINO_UNO` formfactor in targets.json but no valid Arduino Uno pinnames are detected, then an error should be generated.
 
+If an application makes usage of `ARDUINO_UNO_*` pins but the target doesn't not officially support the `ARDUINO_UNO` formfactor in targets.json, then an warning should be generated.
+
+
 ### Implementation details
 
 There are a number of changes and enhancements required to introduce support for the Arduino Uno standard in Mbed OS.
 
-Mbed OS currently includes the `ARDUINO` form factor although it's not considered a standard as it's poorly defined and there are no checks on specific pin names. The configuration for this form factor should continue to be available, although should be marked as deprecated aimed to be removed in the next version of Mbed OS.
+Mbed OS currently includes the `ARDUINO` form factor although it's not considered a standard as it's poorly defined and there are no checks on specific pin names. The configuration for this form factor should continue to be available, although should be marked as deprecated amd aimed to be removed in the next version of Mbed OS.
 
 The following files should be created or updated with a Arduino Uno specific implementation:
 
