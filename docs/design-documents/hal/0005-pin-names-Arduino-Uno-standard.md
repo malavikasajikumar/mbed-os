@@ -55,7 +55,9 @@ The following diagrams shows the Arduino Uno Rev3 standard for Mbed boards:
 
 **Digital and Analog pin definition**
 
-The Arduino Uno (Rev3) form factor for Mbed boards must support and define both D0-D15 pins for digital GPIO and A0-A5 pins for analog inout as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
+The Arduino Uno (Rev3) form factor for Mbed boards must support and define both D0-D15 pins for digital GPIO and A0-A5 pins for analog input as part of the default standard. These pins should be defined in PinNames.h file within a PinName enum. The prefix `ARDUINO_UNO_` distinguishes these pins from pins defined for other custom or common connectors that may have similar pin names. 
+
+The analog input signals in Arduino Uno connector must supported on at least the Ax pins.
 
     // Arduino Uno (Rev3) connector pin connection naming  
     // Px_xx relates to the processor pin connected to the Arduino Uno (Rev3) connector pin
@@ -135,7 +137,7 @@ However, it's possible to override the default configuration. This is the list o
 
 **Examples of usage of Arduino Uno pin names**
 
-This section provides a few examples with guidelines on using Arduino Uno pin names. It's not a guide to use Mbed Drivers API (please refer to the [documentation](https://os.mbed.com/docs/mbed-os/latest/apis/drivers.html) for details).
+This section provides a few examples with guidelines on using Arduino Uno pin names on official example applications. It's not a guide to use Mbed Drivers API (please refer to the [documentation](https://os.mbed.com/docs/mbed-os/latest/apis/drivers.html) for details).
 
 It's possible to use digital signals in both Dx and Ax pins:
 
@@ -143,9 +145,13 @@ It's possible to use digital signals in both Dx and Ax pins:
     DigitalOut myGPIO2(ARDUINO_UNO_D4); // Input signal
     DigitalOut myGPIO3(ARDUINO_UNO_A0); // A0 can be used as digital signal as well
 
-Usage of ADC is only possible on Ax pins:
+Usage of ADC on the Arduino Uno connector should be done only the Ax pins:
 
     AnalogIn myADC1(ARDUINO_UNO_A1);    // Analog input
+
+The MCU may support the usage of ADC functions in other non-Ax pins. This is something that developers could use in their own custom applications. It's recommended they use the MCU's pin names as shown here:
+
+    AnalogIn myADC2(P5_23);             // Custom usage of ADC
 
 UART can be defined with pin names or aliases (the latter is preferred):
 
