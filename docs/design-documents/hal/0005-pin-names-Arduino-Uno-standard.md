@@ -33,7 +33,7 @@ This design document provides rules and guidelines on how to define Arduino Uno 
 
 ### Requirements and assumptions
 
-This document applies to the pin standards required for Arduino Uno connector which is used on multiple Mbed Enabled boards. The Arduino Uno connector has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno connector are based on the Arduino Uno Rev3 connector implementation.
+This document applies to the pin standards required for the Arduino Uno connector which is used on multiple Mbed Enabled boards. The Arduino Uno connector has been stable since 2012 at its current revision, which is the Arduino Uno Rev3. All design choices in this document for the Arduino Uno connector are based on the Arduino Uno Rev3 connector implementation.
 
 If the development board is defined as Arduino Uno compliant, the Arduino Uno connector standard has to be followed as described in this document and `ARDUINO_UNO` name should be defined as a supported form factor in targets.json file:
 
@@ -41,7 +41,7 @@ If the development board is defined as Arduino Uno compliant, the Arduino Uno co
             "ARDUINO_UNO"
         ],
 
-The Arduino Uno connector pins are defined in PinNames.h in the following location:
+The Arduino Uno connector pins are defined in the PinNames.h file for the specific BSP, usually in the following location (it may vary slightly from one vendor to another):
 
     targets/MCU_VENDOR/MCU_FAMILY/MCU_NAME/Board/PinNames.h
 
@@ -88,7 +88,7 @@ The analog input signals in the Arduino Uno connector must be supported on at le
     ARDUINO_UNO_A4 = Px_xx,
     ARDUINO_UNO_A5 = Px_xx,
 
-If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or no connected pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
+If the development board has the Arduino Uno connector in hardware, but does not comply with the Arduino Uno standard, whether it be with alternate functionality pins or non connected pins, the board should not be defined as Arduino Uno compliant and `ARDUINO_UNO` should not be added as a supported form factor in targets.json. Note this may result in a warning being generated at compile time to inform the user.
 
 **I2C, SPI and UART definition**
 
@@ -106,20 +106,24 @@ All I2C, SPI and UART pin name alias definitions for the Arduino Uno (Rev3) conn
     #define ARDUINO_UNO_SPI_SCK  ARDUINO_UNO_D13
 
     // Arduino Uno UART signals aliases
-    #define ARDUINO_UNO_UART_TX  ARDUINO_UNO_D0
-    #define ARDUINO_UNO_UART_RX  ARDUINO_UNO_D1
+    #define ARDUINO_UNO_UART_TX ARDUINO_UNO_D1
+    #define ARDUINO_UNO_UART_RX ARDUINO_UNO_D0
 
     #endif // TARGET_FF_ARDUINO_UNO
 
 **Other pin functions**
 
-Some Dx pinnames may support the usage of PWM or Timers functions. Although this is recomended, it's not a mandatory as requirement to be compliant with the Arduino Uno standard for Mbed boards.
+In the Arduino Uno standard there are only 6 PWM and timers available on pins D3, D5, D6, D9, D10 and D11.
+Mbed boards may support the usage of PWM and timers functions in some Dx pinnames. Although this is recomended as per the Arduino Uno standard, it's not a mandatory as requirement to be compliant with the Arduino Uno standard for Mbed boards.
 
 Note this might be one of the main differencess accross Mbed boards and therefore the application should not assume the same behaviour for PWM and Timers for them.
 
-The RESET signal should be defined in the Arduino Uno connector to let the user or an external component put the MCU in reset state.
+The Reset signal in the Arduino Uno header is a bidirectional reset that will put both a connected Arduino Uno shield and the Mbed board into a reset state. There is a hardware requirement to wire this signal correctly; however there is no need to define the Reset signal in the BSP for the Mbed board.
 
-The VIN signal isn't strictly defined in the Arduino standard and in some cases may work as a bi-directional power supply. Tipically it could accept between 5 to 12 volts, but it's not a requirement.
+The Vin signal is defined in the Arduino Uno standard and should be implemented between 7V to 12V. In some cases this signal may be implemented as a bi-directional power supply.
+A warning should be included in the Mbed platform's website if it isn't implemented in the correct voltage range.
+Note if a Partner or developer designs an Arduino Uno shield and expects 7V-12V on the Vin, it will have power issues with a controller board supplying less then 7V and will likely cause the Arduino Uno shield to not power up correctly
+
 
 ### Usage of Arduino Uno pin-names in an application
 

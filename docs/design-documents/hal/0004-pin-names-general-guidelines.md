@@ -31,8 +31,6 @@ This document provides general guidelines on best practices for defining pin nam
 
 Note there might be separate documents for pin names that apply to specific connectors such as the Arduino Uno. These are available in the [HAL design documents](./) folder.
 
-
-
 ## Detailed design
 
 To achieve meaningful portability of application code across various Mbed Enabled boards, certain pin names of commonly used interfaces and board components should be common across these boards. This document describes a set of rules on how to define components found on actual boards, using the PinNames.h file as part of the BSP of the board.
@@ -44,7 +42,6 @@ To achieve meaningful portability of application code across various Mbed Enable
 Only add LEDs that are available on the board. This is an example on how to define LEDs in PinNames.h:
 
     // Px_xx relates to the processor pin connected to the LED
-    
     #define LED1 = Px_xx  // LED1
     #define LED2 = Px_xx  // LED2  
     #define LED3 = Px_xx  // LED3  
@@ -105,22 +102,23 @@ Alternatively, if the usage of a button is required, then the application can de
         #error This application requires the availability of a button
     #endif 
 
-It's possible to define new names of buttons related to their properties. It's recommended to add a comment with a description. They can be defined as aliases at application level as shown below:
+It's possible to define new names of buttons related to its properties. It's recommended to add a comment with a description. They can be defined as aliases at application level as shown below:
 
     #define PUSH_BUTTON BUTTON1 // Momentary push Button
 
-However, these names do not apply to all boards and hence should not be used in official example applications that are considered platform agnostic.
+However, these names do not apply to all boards and hence should not be used in official example applications developed by Arm nor Partners, as these are considered platform agnostic.
 
 ### UART
 
-Every Mbed board includes a serial interface to the host PC, which allows the console to print useful information about the application status as well to perform basic debug tasks.
+Every Mbed board includes a serial interface to the host PC, which allows the console to print useful information about the application.
 
-This is also a requirement to be able to run automated tests using Greentea, as the communication between the host PC and the MCU is done over serial.
+The UART pins must be defined to be able to run automated tests using Greentea, as the communication between the host PC and the MCU is done over serial.
 
 This is an example on how to define UART names in PinNames.h:
 
-    USBTX       = PB_6,
-    USBRX       = PB_7,
+    // Px_xx relates to the processor pin connected to the UART
+    USBTX       = Px_xx,
+    USBRX       = Px_xx,
 
 Note Mbed OS expects to use these names internally (a fix might be needed during the implementation), for example:
 
@@ -130,18 +128,18 @@ Note Mbed OS expects to use these names internally (a fix might be needed during
 
 ### Non-valid definitions
 
-If either LEDs or buttons are not available, then they should not be defined.
-This allows for unavailable LEDs or buttons to be caught and generate the corresponding error.
+If either LEDs or buttons are not available, they should not be defined.
+This allows for unavailable LEDs or BUTTONs to be caught in Mbed OS allowing the corresponding errors to be generated.
    
     LED1 = PB_0,       // LED1 is valid
-    LED2 = LED1,       // Not valid as it's duplicate  
-    LED3 = PB_0,       // Not valid as it's duplicate 
+    LED2 = LED1,       // Not valid as it's duplicate and LED2 does not exist on the board
+    LED3 = PB_0,       // Not valid as it's duplicate and LED3 does not exist on the board
     LED4 = NC          // Not valid definition as LED4 does not exist
 
     BUTTON1 = PB_1,    // BUTTON1 is valid
-    BUTTON2 = BUTTON1, // Not valid as it's duplicate  
-    BUTTON3 = PB_1,    // Not valid as it's duplicate  
-    BUTTON4 = NC,      // Not valid as BUTTON4 doesn't exist 
+    BUTTON2 = BUTTON1, // Not valid as it's duplicate and BUTTON2 does not exist on the board  
+    BUTTON3 = PB_1,    // Not valid as it's duplicate and BUTTON3 does not exist on the board  
+    BUTTON4 = NC,      // Not valid as BUTTON4 does not exist
 
 
 ### Testing compliance
@@ -155,4 +153,4 @@ Note the testing of UART is implicit when running Greentea tests.
 
 LEDs or buttons should not be defined if they don't exist in the board. If they are defined but contain no valid pinnames, then a warning should be displayed.
 
-In a new version of Mbed OS, the tests should be enabled to check compliance and generate errors when non-valid LEDs are being used.
+In a new version of Mbed OS, the tests should be enabled to check compliance and generate errors when non-valid LEDs or buttons are being used.
