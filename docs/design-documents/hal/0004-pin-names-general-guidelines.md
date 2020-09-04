@@ -151,6 +151,6 @@ There should be both compile and run time checks to confirm whether a board has 
 
 Note the testing of UART is implicit when running Greentea tests.
 
-LEDs or buttons should not be defined if they don't exist in the board. If they are defined but contain no valid pinnames, then a warning should be displayed.
+LEDs or buttons should not be defined if they don't exist on the board. If they are defined but contain no valid pinnames, then a warning should be displayed.
 
 In a new version of Mbed OS, the tests should be enabled to check compliance and generate errors when non-valid LEDs or buttons are being used.
